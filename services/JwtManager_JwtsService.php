@@ -120,7 +120,7 @@ class JwtManager_JwtsService extends JwtManager_BaseService
     public function isTokenExpired(string $token)
     {
         try {
-            $decodedJwt = JWT::decode($token, $this->secretKey, array('HS256'));
+            $decodedJwt = JWT::decode($token, $this->secretKey, ['HS256']);
         } catch (\Exception $e) {
             if ($e instanceof \Firebase\JWT\ExpiredException) {
                 return true;
@@ -141,7 +141,7 @@ class JwtManager_JwtsService extends JwtManager_BaseService
     {
         try {
             // Attempt to get payload
-            $decodedJwt = JWT::decode($token, $this->secretKey, array('HS256'));
+            $decodedJwt = JWT::decode($token, $this->secretKey, ['HS256']);
 
             // Do we have any data?
             if (isset($decodedJwt->data) && !empty($decodedJwt->data)) {
@@ -203,9 +203,9 @@ class JwtManager_JwtsService extends JwtManager_BaseService
     public function getOneJwt(string $token, string $type = '')
     {
         // Set search params
-        $params = array(
+        $params = [
             'token' => $token,
-        );
+        ];
 
         // Specific type?
         if (!empty($type)) {
@@ -233,12 +233,12 @@ class JwtManager_JwtsService extends JwtManager_BaseService
     public function getOneJwtForUser(UserModel $user, string $type, bool $newOnInvalid = false)
     {
         // Set search params
-        $params = array(
+        $params = [
             'device' => $this->_currentDeviceType,
             'browser' => $this->_currentBrowserType,
             'userId' => $user->id,
             'type' => $type,
-        );
+        ];
 
         // Get record
         $record = JwtManager_JwtRecord::model()->findByAttributes($params);
@@ -272,9 +272,9 @@ class JwtManager_JwtsService extends JwtManager_BaseService
     public function getAllJwtsForUser(UserModel $user, string $type = '')
     {
         // Set search params
-        $params = array(
+        $params = [
             'userId' => $user->id,
-        );
+        ];
 
         // Specific type?
         if (!empty($type)) {
@@ -391,12 +391,12 @@ class JwtManager_JwtsService extends JwtManager_BaseService
 
             // Remove old JWTs for user?
             if ($jwt->userId) {
-                $existingJwts = JwtManager_JwtRecord::model()->findAllByAttributes(array(
+                $existingJwts = JwtManager_JwtRecord::model()->findAllByAttributes([
                     'type' => $jwt->type,
                     'device' => $jwt->device,
                     'browser' => $jwt->browser,
                     'userId' => $jwt->userId,
-                ));
+                ]);
                 if ($existingJwts) {
                     foreach ($existingJwts as $existingJwt) {
                         $existingJwt->delete();
@@ -501,12 +501,12 @@ class JwtManager_JwtsService extends JwtManager_BaseService
                 break;
         }
 
-        $params = array(
+        $params = [
             'iss' => craft()->getSiteUrl(), // Issuer
             'iat' => time(), // Issued date
             'exp' => $expireDate, // Expiry date
             'data' => $jwt->contents, // Payload
-        );
+        ];
 
         return JWT::encode($params, $this->secretKey);
     }

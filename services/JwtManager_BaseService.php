@@ -36,7 +36,7 @@ class JwtManager_BaseService extends BaseApplicationComponent
     /**
      * @var array Error that occurred for this class.
      */
-    private $_currentError = array();
+    private $_currentError = [];
 
     // Public Methods
     // =========================================================================

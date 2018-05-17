@@ -95,11 +95,11 @@ class JwtManager_LoginService extends JwtManager_BaseService
                         $jwt = craft()->jwtManager_jwts->getNewJwtByUserId($payload->userId, JwtManager_JwtModel::TYPE_LOGIN);
                         if ($jwt) {
                             // Delete the one time access token
-                            craft()->jwtManager_jwts->deleteJwtBy(array(
+                            craft()->jwtManager_jwts->deleteJwtBy([
                                 'type' => JwtManager_JwtModel::TYPE_ONE_TIME_LOGIN,
                                 'userId' => $payload->userId,
                                 'token' => $token,
-                            ));
+                            ]);
 
                             // Try to login again!
                             return $this->loginByToken($jwt->token);
