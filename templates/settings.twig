@@ -1,0 +1,31 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: 'Tokens will be created using the secret key based on the format you enter here.'|t,
+    id: 'secretKeyFormat',
+    name: 'secretKeyFormat',
+    value: settings.secretKeyFormat,
+    first: true,
+}) }}
+<hr>
+{{ forms.textField({
+    label: 'Tokens expire after this given date.'|t,
+    id: 'tokensExpireAfter',
+    name: 'tokensExpireAfter',
+    value: settings.tokensExpireAfter,
+    size: 15,
+}) }}
+<hr>
+{{ forms.lightswitchField({
+    label: 'Refresh tokens available.'|t,
+    id: 'refreshTokens',
+    name: 'refreshTokens',
+    on: settings.refreshTokens,
+}) }}
+{{ forms.textField({
+    label: 'Refresh tokens expire after this given date.'|t,
+    id: 'refreshTokensExpireAfter',
+    name: 'refreshTokensExpireAfter',
+    value: settings.refreshTokensExpireAfter,
+    size: 15,
+}) }}
