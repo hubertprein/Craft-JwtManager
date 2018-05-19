@@ -128,7 +128,7 @@ class JwtManager_LoginService extends JwtManager_BaseService
             return $this->_handleFailure(($user ? $user->email : null));
         }
 
-        return $this->_handleSuccess($token);
+        return $this->_handleSuccess(false);
     }
 
     /**
@@ -155,11 +155,11 @@ class JwtManager_LoginService extends JwtManager_BaseService
     /**
      * Successful login.
      *
-     * @param string $token [Optional] The token that was used to login.
+     * @param bool $token [Optional] Create a new token for logged in user.
      *
      * @return bool
      */
-    private function _handleSuccess(string $token = '')
+    private function _handleSuccess(bool $createNewToken = true)
     {
         // Get logged in user
         $user = craft()->userSession->getUser();
@@ -168,23 +168,31 @@ class JwtManager_LoginService extends JwtManager_BaseService
             return $this->_handleFailure();
         }
 
-        // Do we have a JWT for this user?
-        $jwt = craft()->jwtManager_jwts->getOneJwtForUser($user, JwtManager_JwtModel::TYPE_LOGIN);
-        if ($jwt && $jwt->isTokenValid() && !$jwt->isTokenExpired()) {
-            $this->_foundJwt = $jwt;
-        } else {
-            // Create a new one
+        // Create new JWT?
+        if ($createNewToken) {
             $jwt = craft()->jwtManager_jwts->getNewJwtByUser($user, JwtManager_JwtModel::TYPE_LOGIN);
             if (!$jwt) {
                 $this->setError(craft()->jwtManager_jwts->getError());
                 return false;
             }
             $this->_foundJwt = $jwt;
-        }
+        } else {
+            // Do we have a JWT for this user?
+            $jwt = craft()->jwtManager_jwts->getOneJwtForUser($user, JwtManager_JwtModel::TYPE_LOGIN);
+            if ($jwt && $jwt->isTokenValid() && !$jwt->isTokenExpired()) {
+                $this->_foundJwt = $jwt;
 
-        // A JWT was used
-        if ($this->_foundJwt) {
-            craft()->jwtManager_jwts->updateJwtUsage($this->_foundJwt);
+                // A JWT was used
+                craft()->jwtManager_jwts->updateJwtUsage($this->_foundJwt);
+            } else {
+                // Create a new one
+                $jwt = craft()->jwtManager_jwts->getNewJwtByUser($user, JwtManager_JwtModel::TYPE_LOGIN);
+                if (!$jwt) {
+                    $this->setError(craft()->jwtManager_jwts->getError());
+                    return false;
+                }
+                $this->_foundJwt = $jwt;
+            }
         }
 
         return true;
