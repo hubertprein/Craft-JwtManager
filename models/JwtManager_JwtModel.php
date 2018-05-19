@@ -53,7 +53,7 @@ class JwtManager_JwtModel extends BaseModel
      *
      * @return bool
      */
-    public function isValid()
+    public function isTokenValid()
     {
         return craft()->jwtManager_jwts->isTokenValid($this->token, $this->type);
     }
@@ -63,7 +63,7 @@ class JwtManager_JwtModel extends BaseModel
      *
      * @return bool
      */
-    public function isExpired()
+    public function isTokenExpired()
     {
         return craft()->jwtManager_jwts->isTokenExpired($this->token, $this->type);
     }
