@@ -15,9 +15,9 @@ use hubertprein\jwtmanager\JwtManager;
 use yii\di\ServiceLocator;
 
 /**
- * JwtManager variables.
+ * Jwts variables.
  */
-class JwtManagerVariable extends ServiceLocator
+class JwtManager_JwtsVariable extends ServiceLocator
 {
     /**
      * Validate a token.
