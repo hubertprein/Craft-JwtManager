@@ -1,6 +1,24 @@
 {
+    "name": "hubertprein/craft-jwtmanager",
+    "description": "Manage JWTs for users which can be used to login.",
+    "version": "1.0.0",
+    "type": "craft-plugin",
     "require": {
+        "craftcms/cms": "^3.0.0-beta.20",
         "firebase/php-jwt": "^4.0.0",
         "mobiledetect/mobiledetectlib": "^2.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "hubertprein\\jwtmanager\\": "src/"
+        }
+    },
+    "extra": {
+        "handle": "jwt-manager",
+        "name": "JWT Manager",
+        "developer": "Hubert Prein",
+        "developerUrl": "https://github.com/hubertprein",
+        "hasSettings": true,
+        "class": "hubertprein\\jwtmanager\\JwtManager"
     }
 }
