@@ -168,6 +168,21 @@ class Jwts extends Base
     }
 
     /**
+     * Get all JWTs.
+     *
+     * @return array
+     */
+    public function getAllJwts()
+    {
+        $jwts = [];
+        foreach ($this->_createJwtQuery()->all() as $record) {
+            $jwts[] = new Jwt($record);
+        }
+
+        return $jwts;
+    }
+
+    /**
      * Get a JWT.
      *
      * @param array $params DB columns and values.
@@ -548,6 +563,6 @@ class Jwts extends Base
                 'jwts.dateUpdated',
             ])
             ->from(['{{%jwtmanager_jwts}} jwts'])
-            ->orderBy(['dateCreated' => SORT_DESC]);
+            ->orderBy(['id' => SORT_DESC]);
     }
 }

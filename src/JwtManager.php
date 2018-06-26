@@ -12,7 +12,9 @@ namespace hubertprein\jwtmanager;
 
 use Craft;
 use craft\base\Plugin;
+use craft\events\RegisterUrlRulesEvent;
 use craft\web\twig\variables\CraftVariable;
+use craft\web\UrlManager;
 use hubertprein\jwtmanager\models\Jwt;
 use hubertprein\jwtmanager\models\Settings;
 use hubertprein\jwtmanager\twigextensions\JwtManagerTwigExtension;
@@ -47,6 +49,11 @@ class JwtManager extends Plugin
     public $hasCpSettings = true;
 
     /**
+     * @inheritdoc
+     */
+    public $hasCpSection = true;
+
+    /**
      * Init plugin.
      */
     public function init()
@@ -55,6 +62,7 @@ class JwtManager extends Plugin
         self::$plugin = $this;
 
         // Register stuff
+        $this->_registerRoutes();
         $this->_registerServices();
         $this->_registerTwigExtensions();
         $this->_registerVariables();
@@ -76,6 +84,24 @@ class JwtManager extends Plugin
         return Craft::$app->getView()->renderTemplate('jwt-manager/settings', [
             'settings' => $this->getSettings(),
         ]);
+    }
+
+    /**
+     * Register Plugin routes.
+     *
+     * @return void
+     */
+    private function _registerRoutes()
+    {
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
+            $rules = [
+                'jwt-manager/jwts' => 'jwt-manager/jwts/index',
+                'jwt-manager/jwts/new' => 'jwt-manager/jwts/edit',
+                'jwt-manager/jwts/edit/<jwtId:\d+>' => 'jwt-manager/jwts/edit',
+            ];
+
+            $event->rules = array_merge($event->rules, $rules);
+        });
     }
 
     /**

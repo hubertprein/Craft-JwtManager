@@ -10,7 +10,9 @@
 
 namespace hubertprein\jwtmanager\models;
 
+use Craft;
 use craft\base\Model;
+use craft\elements\User;
 use hubertprein\jwtmanager\JwtManager;
 
 /**
@@ -93,6 +95,11 @@ class Jwt extends Model
      */
     public $dateUpdated;
 
+    /**
+     * @var array Retrieved users.
+     */
+    private $_users = [];
+
     // Public Methods
     // =========================================================================
 
@@ -115,6 +122,43 @@ class Jwt extends Model
                 ],
             ],
         ];
+    }
+
+    /**
+     * Get JWT's type name.
+     *
+     * @return string
+     */
+    public function getTypeName(): string
+    {
+        switch ($this->type) {
+            case self::TYPE_LOGIN:
+                return Craft::t('jwt-manager', 'Login');
+            case self::TYPE_ONE_TIME_LOGIN:
+                return Craft::t('jwt-manager', 'One time login');
+            case self::TYPE_REFRESH:
+                return Craft::t('jwt-manager', 'Refresh');
+        }
+
+        return Craft::t('jwt-manager', 'Unknown');
+    }
+
+    /**
+     * Get JWT's user.
+     *
+     * @return null|User
+     */
+    public function getUser()
+    {
+        if (empty($this->userId)) {
+            return null;
+        }
+
+        if (!isset($this->_users[$this->userId])) {
+            $this->_users[$this->userId] = Craft::$app->getUsers()->getUserById($this->userId);
+        }
+
+        return $this->_users[$this->userId];
     }
 
     /**

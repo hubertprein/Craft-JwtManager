@@ -37,4 +37,4 @@ Bonus to it is that logging in using a JWT, is much faster.
 
 * `https://www.yourdomainhere.nl/actions/jwt-manager/auth/logout`
 * Send a refresh token in a `Authorization Bearer` header. Which will return a new JWT based on the refresh token.
-`https://www.yourdomainhere.nl/actions/jwt-manager/tokens/use-refresh`
+`https://www.yourdomainhere.nl/actions/jwt-manager/jwts/use-refresh`

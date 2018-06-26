@@ -1,0 +1,58 @@
+{% extends '_layouts/cp' %}
+
+{% set title = 'JWTs'|t('jwt-manager') %}
+
+{% block actionButton %}
+    <a href="{{ url('jwt-manager/jwts/new') }}" class="btn submit add icon">{{ 'Create a new JWT'|t('jwt-manager') }}</a>
+{% endblock %}
+
+{% block content %}
+    <p id="nojwts"{% if jwts %} class="hidden"{% endif %}>
+        {{ "No JWTs exist yet."|t('jwt-manager') }}
+    </p>
+
+    {% if jwts %}
+        <table id="jwts" class="data fullwidth collapsible">
+            <thead>
+                <th scope="col">{{ "ID"|t('app') }}</th>
+                <th scope="col">{{ "Related"|t('jwt-manager') }}</th>
+                <th scope="col">{{ "User"|t('app') }}</th>
+                <th scope="col">{{ "Type"|t('jwt-manager') }}</th>
+                <th scope="col">{{ "Token"|t('jwt-manager') }}</th>
+                <th scope="col">{{ "Times used"|t('jwt-manager') }}</th>
+                <th scope="col">{{ "Date Used"|t('jwt-manager') }}</th>
+                <th scope="col">{{ "Date Created"|t('app') }}</th>
+                <td class="thin"></td>
+            </thead>
+            <tbody>
+                {% for jwt in jwts %}
+                    {% set user = jwt.getUser() %}
+
+                    <tr data-id="{{ jwt.id }}" data-name="{{ jwt.id }}">
+                        <td scope="row" data-title="{{ 'ID'|t('app') }}"><a href="{{ url('jwt-manager/jwts/edit/' ~ jwt.id) }}">{{ jwt.id }}</a></td>
+                        <td data-title="{{ 'Related'|t('jwt-manager') }}">{{ jwt.relatedId|length ? jwt.relatedId : 'None.'|t('jwt-manager') }}</td>
+                        <td data-title="{{ 'User'|t('app') }}">{{ user|length ? (user.getFullName()|length ? user.getFullName() : user.username) : 'No user.'|t('jwt-manager') }}</td>
+                        <td data-title="{{ 'Type'|t('jwt-manager') }}">{{ jwt.getTypeName() }}</td>
+                        <td data-title="{{ 'Token'|t('jwt-manager') }}"><span class="info">{{ jwt.token }}</span></td>
+                        <td data-title="{{ 'Times used'|t('jwt-manager') }}">{{ jwt.timesUsed }}</td>
+                        <td data-title="{{ 'Date Used'|t('jwt-manager') }}">{{ jwt.dateUsed|length ? jwt.dateUsed|datetime('short') : 'Not used.'|t('jwt-manager') }}</td>
+                        <td data-title="{{ 'Date Created'|t('app') }}">{{ jwt.dateCreated|datetime('short') }}</td>
+                        <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+
+{% css %}
+    .info-hud { word-wrap: break-word; }
+{% endcss %}
+
+{% js %}
+    new Craft.AdminTable({
+        tableSelector: '#jwts',
+        noItemsSelector: '#nojwts',
+        deleteAction: 'jwt-manager/jwts/delete'
+    });
+{% endjs %}

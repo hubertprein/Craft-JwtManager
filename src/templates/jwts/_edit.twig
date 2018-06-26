@@ -1,0 +1,40 @@
+{% extends '_layouts/cp' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set fullPageForm = true %}
+
+{# Find JWT user? #}
+{% set jwtUser = null %}
+{% if jwt.userId|length %}
+    {% set jwtUser = craft.users.id(jwt.userId).one() %}
+{% endif %}
+
+{% block content %}
+    <input type="hidden" name="action" value="jwt-manager/jwts/save">
+    {{ redirectInput('jwt-manager/jwts') }}
+
+    {% if jwt.id %}<input type="hidden" name="jwtId" value="{{ jwt.id }}">{% endif %}
+
+    {{ forms.selectField({
+        label: "Type"|t('app'),
+        instructions: "What this JWT will be used for."|t('jwt-manager'),
+        id: 'type',
+        name: 'type',
+        options: jwtTypes,
+        value: jwt.type,
+        errors: jwt.getErrors('type'),
+        required: true,
+        first: true,
+    }) }}
+    {{ forms.elementSelectField({
+        label: "User"|t('app'),
+        id: 'userId',
+        name: 'userId',
+        elementType: 'craft\\elements\\User',
+        selectionLabel: "Choose"|t('app'),
+        limit: 1,
+        elements: [jwtUser],
+        errors: jwt.getErrors('userId')
+    }) }}
+{% endblock %}

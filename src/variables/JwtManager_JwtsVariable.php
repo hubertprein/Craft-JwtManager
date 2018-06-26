@@ -57,6 +57,16 @@ class JwtManager_JwtsVariable extends ServiceLocator
     }
 
     /**
+     * Get all JWTs.
+     *
+     * @return array
+     */
+    public function getAllJwts()
+    {
+        return JwtManager::$plugin->jwts->getAllJwts();
+    }
+
+    /**
      * Get a JWT.
      *
      * @param array $params DB columns and values.
