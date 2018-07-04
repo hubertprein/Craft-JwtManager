@@ -2,6 +2,14 @@
 
 {% set title = 'JWTs'|t('jwt-manager') %}
 
+{# Find JWTs for current page #}
+{% set currentPage = craft.app.request.getPageNum() %}
+{% set limit = 50 %}
+{% set offset = (currentPage - 1) * limit %}
+{% set jwts = craft.jwtManager.jwts.getAllJwts(limit, offset) %}
+{% set totalJwts = craft.jwtManager.jwts.getTotalJwts() %}
+{% set totalPages = totalJwts / limit %}
+
 {% block actionButton %}
     <a href="{{ url('jwt-manager/jwts/new') }}" class="btn submit add icon">{{ 'Create a new JWT'|t('jwt-manager') }}</a>
 {% endblock %}
@@ -42,6 +50,23 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        {% if totalPages > 1 %}
+            <br>
+            <div class="centeralign">
+                <a href="{{ url('jwt-manager/jwts') }}">{{ 'First Page'|t('jwt-manager') }}</a> |
+                {% for page in 1..totalPages %}
+                    <a href="{{ url('jwt-manager/jwts/p' ~ page) }}">
+                        {% if page == currentPage %}
+                            <strong>{{ page }}</strong>
+                        {% else %}
+                            {{ page }}
+                        {% endif %}
+                    </a> |
+                {% endfor %}
+                <a href="{{ url('jwt-manager/jwts/p' ~ totalPages) }}">{{ 'Last Page'|t('jwt-manager') }}</a>
+            </div>
+        {% endif %}
     {% endif %}
 {% endblock %}
 

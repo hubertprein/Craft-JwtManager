@@ -13,6 +13,7 @@ namespace hubertprein\jwtmanager\models;
 use Craft;
 use craft\base\Model;
 use craft\elements\User;
+use craft\validators\DateTimeValidator;
 use hubertprein\jwtmanager\JwtManager;
 
 /**
@@ -106,11 +107,22 @@ class Jwt extends Model
     /**
      * @inheritdoc
      */
+    public function datetimeAttributes(): array
+    {
+        $attributes = parent::datetimeAttributes();
+        $attributes[] = 'dateUsed';
+        return $attributes;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules(): array
     {
         return [
             [['id', 'userId', 'timesUsed'], 'number', 'integerOnly' => true],
             [['userId', 'type', 'contents', 'device', 'browser', 'userAgent', 'token'], 'required'],
+            [['dateUsed'], DateTimeValidator::class],
             [['active'], 'boolean'],
             [
                 ['type'],

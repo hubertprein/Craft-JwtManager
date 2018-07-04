@@ -13,7 +13,6 @@ namespace hubertprein\jwtmanager\services;
 use Craft;
 use craft\db\Query;
 use craft\elements\User;
-use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT as JwtEngine;
@@ -170,16 +169,29 @@ class Jwts extends Base
     /**
      * Get all JWTs.
      *
+     * @param int $limit
+     * @param int $offset
+     *
      * @return array
      */
-    public function getAllJwts()
+    public function getAllJwts(int $limit = null, int $offset = null): array
     {
         $jwts = [];
-        foreach ($this->_createJwtQuery()->all() as $record) {
+        foreach ($this->_createJwtQuery()->limit($limit)->offset($offset)->all() as $record) {
             $jwts[] = new Jwt($record);
         }
 
         return $jwts;
+    }
+
+    /**
+     * Get total JWTs.
+     *
+     * @return int
+     */
+    public function getTotalJwts(): int
+    {
+        return $this->_createJwtQuery()->count();
     }
 
     /**
@@ -438,6 +450,8 @@ class Jwts extends Base
         $record->browser = $jwt->browser;
         $record->userAgent = $jwt->userAgent;
         $record->token = $jwt->token;
+        $record->timesUsed = $jwt->timesUsed;
+        $record->dateUsed = $jwt->dateUsed;
         if (!$record->save()) {
             $this->setError('Could not save JWT.');
             return false;
@@ -486,7 +500,7 @@ class Jwts extends Base
     public function updateJwtUsage(Jwt $jwt): bool
     {
         $jwt->timesUsed++;
-        $jwt->dateUsed = DateTimeHelper::currentUTCDateTime();
+        $jwt->dateUsed = new \DateTime();
 
         return $this->saveJwt($jwt);
     }
@@ -498,7 +512,7 @@ class Jwts extends Base
      *
      * @return bool
      */
-    public function deleteJwtBy(array $params)
+    public function deleteJwtBy(array $params): bool
     {
         $success = Craft::$app->getDb()->createCommand()
             ->delete('{{%jwtmanager_jwts}}', $params)
@@ -517,7 +531,7 @@ class Jwts extends Base
      *
      * @return string
      */
-    private function _createToken(Jwt $jwt)
+    private function _createToken(Jwt $jwt): string
     {
         switch ($jwt->type) {
             case Jwt::TYPE_REFRESH:

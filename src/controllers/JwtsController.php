@@ -38,8 +38,6 @@ class JwtsController extends Controller
      */
     public function actionIndex(array $variables = []): Response
     {
-        $variables['jwts'] = JwtManager::$plugin->jwts->getAllJwts();
-
         return $this->renderTemplate('jwt-manager/jwts/_index', $variables);
     }
 

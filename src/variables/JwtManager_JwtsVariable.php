@@ -27,7 +27,7 @@ class JwtManager_JwtsVariable extends ServiceLocator
      *
      * @return bool
      */
-    public function isTokenValid(string $token, string $type = '')
+    public function isTokenValid(string $token, string $type = ''): bool
     {
         return JwtManager::$plugin->jwts->isTokenValid($token, $type);
     }
@@ -39,7 +39,7 @@ class JwtManager_JwtsVariable extends ServiceLocator
      *
      * @return bool
      */
-    public function isTokenExpired(string $token)
+    public function isTokenExpired(string $token): bool
     {
         return JwtManager::$plugin->jwts->isTokenExpired($token);
     }
@@ -59,11 +59,24 @@ class JwtManager_JwtsVariable extends ServiceLocator
     /**
      * Get all JWTs.
      *
+     * @param int $limit
+     * @param int $offset
+     *
      * @return array
      */
-    public function getAllJwts()
+    public function getAllJwts(int $limit = null, int $offset = null): array
     {
-        return JwtManager::$plugin->jwts->getAllJwts();
+        return JwtManager::$plugin->jwts->getAllJwts($limit, $offset);
+    }
+
+    /**
+     * Get total JWTs.
+     *
+     * @return int
+     */
+    public function getTotalJwts(): int
+    {
+        return JwtManager::$plugin->jwts->getTotalJwts();
     }
 
     /**
