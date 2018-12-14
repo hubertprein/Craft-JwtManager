@@ -73,7 +73,9 @@ class Jwts extends Base
      */
     public function getTokenFromRequest()
     {
-        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION']) && preg_match('/Bearer\s+(.*)$/i', $_SERVER['REDIRECT_HTTP_AUTHORIZATION'], $matches)) {
+        $authorizationHeader = Craft::$app->request->headers->get('authorization');
+
+        if ($authorizationHeader && preg_match('/Bearer\s+(.*)$/i', $authorizationHeader, $matches)) {
             if (!empty($matches[1])) {
                 return $matches[1];
             }
