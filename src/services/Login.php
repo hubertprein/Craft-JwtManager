@@ -148,7 +148,7 @@ class Login extends Base
     public function loginByCredentials(string $username, string $password): bool
     {
         // Does a user exist with that username/email?
-        $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($loginName);
+        $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($username);
         if (!$user) {
             return $this->_handleFailure(User::AUTH_INVALID_CREDENTIALS);
         }
