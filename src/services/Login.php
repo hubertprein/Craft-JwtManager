@@ -145,10 +145,10 @@ class Login extends Base
      *
      * @return bool
      */
-    public function loginByCredentials(string $username, string $password): bool
+    public function loginByCredentials(string $username, string $password, bool $rememberMe = false): bool
     {
         // Does a user exist with that username/email?
-        $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($loginName);
+        $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($username);
         if (!$user) {
             return $this->_handleFailure(User::AUTH_INVALID_CREDENTIALS);
         }
