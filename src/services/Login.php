@@ -127,6 +127,14 @@ class Login extends Base
             $this->setError(JwtManager::$plugin->jwts->getError());
             return false;
         }
+        
+        // Parse the payload to an object, if it's a valid json string.
+        if (is_string($payload)) {
+            $payloadCheck = json_decode($payload);
+            if (!is_null($payloadCheck)) {
+                $payload = $payloadCheck;
+            }
+        }
 
         // Login user!
         if (!Craft::$app->getUser()->loginByUserId($payload->userId)) {
