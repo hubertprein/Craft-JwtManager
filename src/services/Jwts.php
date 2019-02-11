@@ -155,6 +155,13 @@ class Jwts extends Base
 
             // Do we have any data?
             if (isset($decodedJwt->data) && !empty($decodedJwt->data)) {
+                // Parse the payload to an object, if it's a valid json string.
+                if (is_string($decodedJwt->data)) {
+                    $jsonPayload = json_decode($decodedJwt->data);
+                    if (!is_null($jsonPayload)) {
+                        return $jsonPayload;
+                    }
+                }
                 return $decodedJwt->data;
             }
 
