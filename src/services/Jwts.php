@@ -161,6 +161,7 @@ class Jwts extends Base
                     if (!is_null($jsonPayload)) {
                         return $jsonPayload;
                     }
+                    return null;
                 }
                 return $decodedJwt->data;
             }
