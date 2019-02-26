@@ -51,7 +51,11 @@ class MobileDetect extends Component
     public function getDeviceType(): string
     {
         if (!$this->isMobile()) {
-            return 'desktop';
+            if ($this->is('Electron')) {
+                return 'desktop';
+            } elseif ($this->getBrowserType() !== 'desktop') {
+                return 'web';
+            }
         } elseif ($this->isTablet()) {
             return 'tablet';
         } elseif ($this->isPhone()) {
